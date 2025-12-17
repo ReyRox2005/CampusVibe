@@ -1,0 +1,6 @@
+__pycache__/
+.env
+.secrets.toml
+storage/
+notes/
+*.db
