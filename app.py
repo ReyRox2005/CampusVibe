@@ -252,11 +252,11 @@ else:
             st.warning("Notes for this year/semester are yet to be uploaded.")
             if st.button("🏠 Back to Home"): st.session_state.filter_applied = False; st.rerun()
 
-    # --- AI CHAT ---
+    # --- AI CHAT (Updated for Stability) ---
     st.markdown("---")
     st.markdown("## 🧠 Ask the AI Senior")
     
-    # Display chat history
+    # Show history
     for m in st.session_state.messages:
         with st.chat_message(m["role"]): st.markdown(m["content"])
 
@@ -266,9 +266,18 @@ else:
         
         with st.chat_message("assistant"):
             if rag_query_engine:
-                response = rag_query_engine.query(p)
-                ans = str(response)
-                st.markdown(ans)
-                st.session_state.messages.append({"role": "assistant", "content": ans})
+                try:
+                    # Using a spinner helps the user know the AI is working
+                    with st.spinner("AI Senior is thinking..."):
+                        response = rag_query_engine.query(p)
+                        ans = str(response)
+                        st.markdown(ans)
+                        st.session_state.messages.append({"role": "assistant", "content": ans})
+                except Exception as e:
+                    # This captures the Hugging Face "Loading" error specifically
+                    if "503" in str(e) or "loading" in str(e).lower():
+                        st.info("The AI is waking up! Please wait 30 seconds and click 'Enter' again.")
+                    else:
+                        st.error(f"AI Error: {e}")
             else:
-                st.error("AI engine is currently offline. Check your API token.")
+                st.error("AI engine is offline. Check sidebar for errors.")
