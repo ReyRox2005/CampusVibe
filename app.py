@@ -82,7 +82,7 @@ def submit_note_feedback(note_id, user_email, feedback_text):
     except: return False
 
 # ---------------- RAG INITIALIZATION (CLOUD VERSION) ----------------
-# try:
+ try:
     # Use HF_TOKEN from Streamlit Secrets
     hf_token = st.secrets.get("HF_TOKEN", None)
     
