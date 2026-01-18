@@ -90,7 +90,7 @@ try:
     
     # Using TinyLlama via Hugging Face API (Path B)
     LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
-        model_name="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        model_name="HuggingFaceH4/zephyr-7b-beta",
         token=hf_token
     )
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
