@@ -8,7 +8,7 @@ import os
 # --- RAG AND LLM IMPORTS ---
 from llama_index.core import VectorStoreIndex, StorageContext, load_index_from_storage
 from llama_index.core.settings import Settings
-from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
+from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core.storage.docstore.simple_docstore import SimpleDocumentStore
 from llama_index.core.storage.index_store.simple_index_store import SimpleIndexStore
@@ -88,12 +88,13 @@ try:
     st.sidebar.write("HF token length:", len(hf_token) if hf_token else "NOT LOADED")
     
     # Using TinyLlama via Hugging Face API (Path B)
-    LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
-        model="mistralai/Mistral-7B-Instruct-v0.2",
-        token=hf_token,
-        temperature=0.3,
-        max_tokens=512,
-        is_chat_model=False
+    LLM_MODEL_INSTANCE = HuggingFaceLLM(
+        model_name="mistralai/Mistral-7B-Instruct-v0.2",
+        tokenizer_name="mistralai/Mistral-7B-Instruct-v0.2",
+        context_window=4096,
+        max_new_tokens=512,
+        generate_kwargs={"temperature": 0.3},
+        token=hf_token
         )
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
     Settings.llm, Settings.embed_model = LLM_MODEL_INSTANCE, EMBED_MODEL_INSTANCE
