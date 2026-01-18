@@ -86,17 +86,15 @@ def submit_note_feedback(note_id, user_email, feedback_text):
 
 
 try:
-    hf_token = st.secrets["NEW_HF_TOKEN"]
+    groq_key = st.secrets["GROQ_API_KEY"]
     
-    # Using Zephyr-7B-Beta as it is highly stable on the free Inference API
-    LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
-        model_name="HuggingFaceH4/zephyr-7b-beta",
-        token=hf_token,
-        context_window=4096,
-        max_tokens=512
+    # Groq is much more stable for Streamlit Cloud
+    LLM_MODEL_INSTANCE = Groq(
+        model="llama-3.3-70b-versatile", 
+        api_key=groq_key
     )
     
-    # Embeddings stay the same
+    # Embeddings stay on Hugging Face (these rarely fail)
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
     
     Settings.llm = LLM_MODEL_INSTANCE
