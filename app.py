@@ -89,9 +89,11 @@ try:
     
     # Using TinyLlama via Hugging Face API (Path B)
     LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
-        model_name="HuggingFaceH4/zephyr-7b-beta",
-        token=hf_token
-    )
+        model="HuggingFaceH4/zephyr-7b-beta",
+        token=hf_token,
+        temperature=0.3,
+        max_tokens=512
+        )
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
     Settings.llm, Settings.embed_model = LLM_MODEL_INSTANCE, EMBED_MODEL_INSTANCE
 except Exception as e:
