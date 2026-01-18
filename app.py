@@ -84,10 +84,8 @@ def submit_note_feedback(note_id, user_email, feedback_text):
 # ---------------- RAG INITIALIZATION (CLOUD VERSION) ----------------
 try:
     # Use HF_TOKEN from Streamlit Secrets
-    hf_token = st.secrets.get("NEW_HF_TOKEN", None)
+    hf_token = st.secrets["NEW_HF_TOKEN"]
     st.sidebar.write("HF token length:", len(hf_token) if hf_token else "NOT LOADED")
-    if not hf_token:
-        hf_token = st.secrets.get("HF_TOKEN", None)
     
     # Using TinyLlama via Hugging Face API (Path B)
     LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
