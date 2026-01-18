@@ -6,6 +6,7 @@ import datetime
 import os
 
 # --- RAG AND LLM IMPORTS ---
+from llama_index.llms.groq import Groq
 from llama_index.core import VectorStoreIndex, StorageContext, load_index_from_storage
 from llama_index.core.settings import Settings
 from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
