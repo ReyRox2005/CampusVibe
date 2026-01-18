@@ -82,34 +82,28 @@ def submit_note_feedback(note_id, user_email, feedback_text):
     except: return False
 
 # ---------------- RAG INITIALIZATION (CLOUD VERSION) ----------------
-# --- RAG INITIALIZATION (REPAIRED FOR CLOUD) ---
-from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI # <--- CRUCIAL CHANGE
+#--- RAG INITIALIZATION (REPAIRED FOR CLOUD) ---
+
 
 try:
-    # 1. Fetch the secret
     hf_token = st.secrets["NEW_HF_TOKEN"]
     
-    # 2. Use HuggingFaceInferenceAPI for remote serverless execution
-    # This prevents the 401 local-only error you are seeing
+    # We specify the base_url to ensure it points to the correct new endpoint
     LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
         model_name="mistralai/Mistral-7B-Instruct-v0.2",
         token=hf_token,
+        # This base_url often fixes 404 errors in LlamaIndex cloud deployments
+        base_url="https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
         context_window=4096,
-        max_tokens=512,
-        temperature=0.3
+        max_tokens=512
     )
     
-    # 3. Embedding model remains the same
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    Settings.llm, Settings.embed_model = LLM_MODEL_INSTANCE, EMBED_MODEL_INSTANCE
     
-    # 4. Update global settings
-    Settings.llm = LLM_MODEL_INSTANCE
-    Settings.embed_model = EMBED_MODEL_INSTANCE
-
 except Exception as e:
     st.sidebar.error(f"AI Setup Error: {e}")
     LLM_MODEL_INSTANCE = None
-
 def init_rag_engine(llm_instance):
     if not llm_instance: return None
     try:
