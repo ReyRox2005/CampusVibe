@@ -8,7 +8,7 @@ import os
 # --- RAG AND LLM IMPORTS ---
 from llama_index.core import VectorStoreIndex, StorageContext, load_index_from_storage
 from llama_index.core.settings import Settings
-from llama_index.llms.huggingface import HuggingFaceLLM
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core.storage.docstore.simple_docstore import SimpleDocumentStore
 from llama_index.core.storage.index_store.simple_index_store import SimpleIndexStore
