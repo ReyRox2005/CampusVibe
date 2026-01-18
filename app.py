@@ -92,7 +92,8 @@ try:
         model="HuggingFaceH4/zephyr-7b-beta",
         token=hf_token,
         temperature=0.3,
-        max_tokens=512
+        max_tokens=512,
+        is_chat_model=False
         )
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
     Settings.llm, Settings.embed_model = LLM_MODEL_INSTANCE, EMBED_MODEL_INSTANCE
