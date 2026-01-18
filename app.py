@@ -88,18 +88,19 @@ def submit_note_feedback(note_id, user_email, feedback_text):
 try:
     hf_token = st.secrets["NEW_HF_TOKEN"]
     
-    # We specify the base_url to ensure it points to the correct new endpoint
+    # Using Zephyr-7B-Beta as it is highly stable on the free Inference API
     LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
-        model_name="mistralai/Mistral-7B-Instruct-v0.2",
+        model_name="HuggingFaceH4/zephyr-7b-beta",
         token=hf_token,
-        # This base_url often fixes 404 errors in LlamaIndex cloud deployments
-        base_url="https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
         context_window=4096,
         max_tokens=512
     )
     
+    # Embeddings stay the same
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    Settings.llm, Settings.embed_model = LLM_MODEL_INSTANCE, EMBED_MODEL_INSTANCE
+    
+    Settings.llm = LLM_MODEL_INSTANCE
+    Settings.embed_model = EMBED_MODEL_INSTANCE
     
 except Exception as e:
     st.sidebar.error(f"AI Setup Error: {e}")
