@@ -82,22 +82,30 @@ def submit_note_feedback(note_id, user_email, feedback_text):
     except: return False
 
 # ---------------- RAG INITIALIZATION (CLOUD VERSION) ----------------
+# --- RAG INITIALIZATION (REPAIRED FOR CLOUD) ---
+from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI # <--- CRUCIAL CHANGE
+
 try:
-    # Use HF_TOKEN from Streamlit Secrets
+    # 1. Fetch the secret
     hf_token = st.secrets["NEW_HF_TOKEN"]
-    st.sidebar.write("HF token length:", len(hf_token) if hf_token else "NOT LOADED")
     
-    # Using TinyLlama via Hugging Face API (Path B)
-    LLM_MODEL_INSTANCE = HuggingFaceLLM(
+    # 2. Use HuggingFaceInferenceAPI for remote serverless execution
+    # This prevents the 401 local-only error you are seeing
+    LLM_MODEL_INSTANCE = HuggingFaceInferenceAPI(
         model_name="mistralai/Mistral-7B-Instruct-v0.2",
-        tokenizer_name="mistralai/Mistral-7B-Instruct-v0.2",
+        token=hf_token,
         context_window=4096,
-        max_new_tokens=512,
-        generate_kwargs={"temperature": 0.3},
-        token=hf_token
-        )
+        max_tokens=512,
+        temperature=0.3
+    )
+    
+    # 3. Embedding model remains the same
     EMBED_MODEL_INSTANCE = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    Settings.llm, Settings.embed_model = LLM_MODEL_INSTANCE, EMBED_MODEL_INSTANCE
+    
+    # 4. Update global settings
+    Settings.llm = LLM_MODEL_INSTANCE
+    Settings.embed_model = EMBED_MODEL_INSTANCE
+
 except Exception as e:
     st.sidebar.error(f"AI Setup Error: {e}")
     LLM_MODEL_INSTANCE = None
